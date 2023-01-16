@@ -26,3 +26,6 @@ TextStyle purpleTextStyle = GoogleFonts.poppins(
   fontWeight: FontWeight.w500,
   color: purpleColor,
 );
+
+TextStyle regularTextStyle =
+    GoogleFonts.poppins(fontWeight: FontWeight.w400, color: blackColor);
