@@ -11,11 +11,11 @@ class TipsCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Image.asset(
-          tips.imgUrl,
-          height: 80,
-          width: 80,
-        ),
+        // Image.asset(
+        //   tips.imgUrl,
+        //   height: 50,
+        //   width: 50,
+        // ),
         SizedBox(
           width: 16,
         ),

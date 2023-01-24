@@ -1,5 +1,6 @@
 import 'package:cozy/models/space.dart';
 import 'package:cozy/models/tips.dart';
+import 'package:cozy/providers/space_provider.dart';
 import 'package:cozy/theme.dart';
 import 'package:cozy/widgets/city_card.dart';
 import 'package:cozy/widgets/navbar_item.dart';
@@ -8,12 +9,15 @@ import 'package:cozy/widgets/tips_card.dart';
 import 'package:flutter/material.dart';
 
 import 'package:cozy/models/city.dart';
+import 'package:provider/provider.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    var spaceProvider = Provider.of<SpaceProvider>(context);
+    spaceProvider.getRecommendedSpaces();
     return Scaffold(
       body: SafeArea(
         child: ListView(
@@ -100,45 +104,26 @@ class HomePage extends StatelessWidget {
             //TODO: Recomended Space
             Padding(
               padding: const EdgeInsets.only(left: 24),
-              child: Column(
-                children: [
-                  SpaceCard(
-                    space: Space(
-                        id: 1,
-                        name: 'Kuretakeso Hott',
-                        price: 52,
-                        city: 'Bandung',
-                        country: 'Germany',
-                        imgUrl: 'assets/space1.png',
-                        rating: 4),
-                  ),
-                  SizedBox(
-                    height: 30,
-                  ),
-                  SpaceCard(
-                    space: Space(
-                        id: 2,
-                        name: 'Roemah Nenek',
-                        price: 11,
-                        city: 'Seattle',
-                        country: 'Bogor',
-                        imgUrl: 'assets/space3.png',
-                        rating: 5),
-                  ),
-                  SizedBox(
-                    height: 30,
-                  ),
-                  SpaceCard(
-                    space: Space(
-                        id: 1,
-                        name: 'Darrling How',
-                        price: 20,
-                        city: 'Jakarta',
-                        country: 'Indonesia',
-                        imgUrl: 'assets/space2.png',
-                        rating: 3),
-                  ),
-                ],
+              child: FutureBuilder(
+                future: spaceProvider.getRecommendedSpaces(),
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    List<Space> data = snapshot.data as List<Space>;
+                    int idx = 0;
+                    return Column(
+                      children: data.map((item) {
+                        idx++;
+                        return Container(
+                          margin: EdgeInsets.only(top: idx == 1 ? 0 : 30),
+                          child: SpaceCard(space: item),
+                        );
+                      }).toList(),
+                    );
+                  }
+                  return Center(
+                    child: CircularProgressIndicator(),
+                  );
+                },
               ),
             ),
             SizedBox(
@@ -163,7 +148,7 @@ class HomePage extends StatelessWidget {
                       tips: Tips(
                           id: 1,
                           title: 'City Guidelines',
-                          imgUrl: 'tips1.png',
+                          imgUrl: 'space1.png',
                           date: '20 Apr')),
                   SizedBox(
                     height: 20,
@@ -172,7 +157,7 @@ class HomePage extends StatelessWidget {
                       tips: Tips(
                           id: 2,
                           title: 'Jakarta Fairship',
-                          imgUrl: 'tips2.png',
+                          imgUrl: 'space2.png',
                           date: '11 Dec')),
                 ],
               ),

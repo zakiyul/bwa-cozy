@@ -1,18 +1,20 @@
+import 'dart:convert';
+
 class Space {
-  late int id;
-  late String name;
-  late int price;
-  late String city;
-  late String country;
-  late String imgUrl;
-  late int rating;
-  late String address;
-  late String phone;
-  late String mapUrl;
-  late List photos;
-  late int numberOfKitchens;
-  late int numberOfBedrooms;
-  late int numberOfCupboards;
+  final int id;
+  final String name;
+  final int price;
+  final String city;
+  final String country;
+  final String imgUrl;
+  final int rating;
+  final String address;
+  final String phone;
+  final String mapUrl;
+  final List photos;
+  final int numberOfKitchens;
+  final int numberOfBedrooms;
+  final int numberOfCupboards;
 
   Space({
     required this.id,
@@ -31,19 +33,20 @@ class Space {
     required this.numberOfCupboards,
   });
 
-  Space.fromJson(json) {
-    id = json['id'];
-    name = json['name'];
-    price = json['price'];
-    city = json['city'];
-    country = json['country'];
-    imgUrl = json['image_url'];
-    rating = json['rating'];
-    address = json['address'];
-    phone = json['phone'];
-    mapUrl = json['map_url'];
-    numberOfBedrooms = json['number_of_bedrooms'];
-    numberOfCupboards = json['number_of_cupboards'];
-    numberOfKitchens = json['number_of_kitchens'];
-  }
+  factory Space.fromJson(Map<String, dynamic> json) => Space(
+        id: json["id"],
+        photos: List<String>.from(json["photos"].map((x) => x)),
+        name: json["name"],
+        city: json["city"],
+        country: json["country"],
+        price: json["price"],
+        imgUrl: json["image_url"],
+        rating: json["rating"],
+        address: json["address"],
+        phone: json["phone"],
+        mapUrl: json["map_url"],
+        numberOfKitchens: json["number_of_kitchens"],
+        numberOfBedrooms: json["number_of_bedrooms"],
+        numberOfCupboards: json["number_of_cupboards"],
+      );
 }
