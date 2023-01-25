@@ -12,7 +12,11 @@ class SpaceCard extends StatelessWidget {
     return InkWell(
       onTap: () {
         Navigator.push(
-            context, MaterialPageRoute(builder: (context) => DetailPage()));
+            context,
+            MaterialPageRoute(
+                builder: (context) => DetailPage(
+                      space: space,
+                    )));
       },
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
