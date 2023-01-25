@@ -7,13 +7,19 @@ import 'package:flutter/material.dart';
 
 import 'package:url_launcher/url_launcher.dart';
 
-class DetailPage extends StatelessWidget {
+class DetailPage extends StatefulWidget {
   final Space space;
   const DetailPage({super.key, required this.space});
 
   @override
+  State<DetailPage> createState() => _DetailPageState();
+}
+
+class _DetailPageState extends State<DetailPage> {
+  bool _isFavorited = false;
+  @override
   Widget build(BuildContext context) {
-    final Uri _url = Uri.parse(space.mapUrl);
+    final Uri _url = Uri.parse(widget.space.mapUrl);
     // final Uri _url = Uri.parse('tes123');
 
     _launchUrl() async {
@@ -33,11 +39,21 @@ class DetailPage extends StatelessWidget {
       await launchUrl(launchUri);
     }
 
+    void _toggleFavorite() {
+      setState(() {
+        if (_isFavorited) {
+          _isFavorited = false;
+        } else {
+          _isFavorited = true;
+        }
+      });
+    }
+
     int idx = 0;
     return Scaffold(
       body: SafeArea(
         child: Stack(children: [
-          Image.network(space.imgUrl),
+          Image.network(widget.space.imgUrl),
           ListView(
             children: [
               SizedBox(
@@ -65,14 +81,14 @@ class DetailPage extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                space.name,
+                                widget.space.name,
                                 style: blackTextStyle.copyWith(fontSize: 22),
                               ),
                               SizedBox(
                                 height: 2,
                               ),
                               Text(
-                                '\$${space.price} / month',
+                                '\$${widget.space.price} / month',
                                 style: greyTextStyle.copyWith(fontSize: 16),
                               )
                             ],
@@ -84,7 +100,7 @@ class DetailPage extends StatelessWidget {
                                 margin: EdgeInsets.only(left: 2),
                                 child: RatingItem(
                                   index: idx,
-                                  rating: space.rating,
+                                  rating: widget.space.rating,
                                 ),
                               );
                             }).toList(),
@@ -108,21 +124,21 @@ class DetailPage extends StatelessWidget {
                           FacilityIcon(
                               name: 'kitchen',
                               imgUrl: 'assets/icon_kitchen.png',
-                              total: space.numberOfKitchens),
+                              total: widget.space.numberOfKitchens),
                           // SizedBox(
                           //   width: 35,
                           // ),
                           FacilityIcon(
                               name: 'bedroom',
                               imgUrl: 'assets/icon_bedroom.png',
-                              total: space.numberOfBedrooms),
+                              total: widget.space.numberOfBedrooms),
                           // SizedBox(
                           //   width: 35,
                           // ),
                           FacilityIcon(
                               name: 'Big Lemari',
                               imgUrl: 'assets/icon_cupboard.png',
-                              total: space.numberOfCupboards),
+                              total: widget.space.numberOfCupboards),
                           // SizedBox(
                           //   width: 35,
                           // ),
@@ -143,7 +159,7 @@ class DetailPage extends StatelessWidget {
                         height: 88,
                         child: ListView(
                           scrollDirection: Axis.horizontal,
-                          children: space.photos.map((item) {
+                          children: widget.space.photos.map((item) {
                             idx++;
                             return Container(
                               margin: EdgeInsets.only(left: idx == 1 ? 0 : 18),
@@ -156,29 +172,7 @@ class DetailPage extends StatelessWidget {
                                 ),
                               ),
                             );
-                          }).toList()
-                          // Image.asset(
-                          //   'assets/photo1.png',
-                          //   width: 110,
-                          //   fit: BoxFit.cover,
-                          // ),
-                          // SizedBox(
-                          //   width: 18,
-                          // ),
-                          // Image.asset(
-                          //   'assets/photo2.png',
-                          //   width: 110,
-                          //   fit: BoxFit.cover,
-                          // ),
-                          // SizedBox(
-                          //   width: 18,
-                          // ),
-                          // Image.asset(
-                          //   'assets/photo3.png',
-                          //   width: 110,
-                          //   fit: BoxFit.cover,
-                          // ),
-                          ,
+                          }).toList(),
                         ),
                       ),
                       SizedBox(
@@ -197,7 +191,7 @@ class DetailPage extends StatelessWidget {
                         children: [
                           //text
                           Text(
-                            space.address,
+                            widget.space.address,
                             style: greyTextStyle.copyWith(fontSize: 14),
                           ),
                           //icon
@@ -228,7 +222,26 @@ class DetailPage extends StatelessWidget {
                                       borderRadius:
                                           BorderRadius.circular(17)))),
                           onPressed: () {
-                            _makePhoneCall(space.phone);
+                            showDialog<String>(
+                              context: context,
+                              builder: (BuildContext context) => AlertDialog(
+                                content:
+                                    const Text('Are you sure to make a call?'),
+                                actions: <Widget>[
+                                  TextButton(
+                                    onPressed: () =>
+                                        Navigator.pop(context, 'Cancel'),
+                                    child: const Text('Cancel'),
+                                  ),
+                                  TextButton(
+                                    onPressed: () =>
+                                        _makePhoneCall(widget.space.phone),
+                                    child: const Text('OK'),
+                                  ),
+                                ],
+                              ),
+                            );
+                            // _makePhoneCall(widget.space.phone);
                           },
                           child: Text(
                             'Book Now',
@@ -257,9 +270,21 @@ class DetailPage extends StatelessWidget {
                     width: 40,
                   ),
                 ),
-                Image.asset(
-                  'assets/btn_wishlist.png',
-                  width: 40,
+                IconButton(
+                  icon: (_isFavorited
+                      ? Image.asset(
+                          'assets/btn_wishlist_fav.png',
+                          width: 40,
+                        )
+                      : Image.asset(
+                          'assets/btn_wishlist.png',
+                          width: 40,
+                        )),
+                  onPressed: _toggleFavorite,
+                  // child: Image.asset(
+                  //   'assets/btn_wishlist.png',
+                  //   width: 40,
+                  // ),
                 )
               ],
             ),
